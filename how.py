@@ -14,3 +14,11 @@ steps: dict = {
         ],
     },
 }
+
+today = {
+
+    1: "Clean sp500",
+    2: "Make a cleaning module",
+    3: "Check each specific indicator",
+    4: "Make a indicator module",
+}
