@@ -161,7 +161,7 @@ def make_target(df: pd.DataFrame, target_path: str):
     return
 
 
-def main(data_name: str):
+def add_targets(data_name: str):
 
     window_size = data_settings.sl_window
     parts = 8
@@ -199,6 +199,4 @@ def main(data_name: str):
 
 
 if __name__ == "__main__":
-
-    data_name = data_settings.data_name
-    main(data_name)
+    pass

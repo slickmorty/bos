@@ -3,7 +3,7 @@ import pandas as pd
 from settings.settings import data_settings
 
 
-def main(data_name: str):
+def add_indicators(data_name: str):
 
     csv_path = data_settings.csv_path
     cleaed_data_path = csv_path + "cleaned_mt_data/" + data_name + ".csv"
@@ -188,6 +188,4 @@ def main(data_name: str):
 
 
 if __name__ == "__main__":
-
-    data_name = data_settings.data_name
-    main(data_name)
+    pass
