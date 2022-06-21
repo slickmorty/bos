@@ -5,7 +5,8 @@ import pandas as pd
 
 def make_target(df: pd.DataFrame, target_path: str):
 
-    stop_loss_to_atr_ratio = data_settings.stop_loss_to_atr_ratio
+    window_size = data_settings.sl_window
+    stop_loss_to_atr_ratio = 3
 
     # 0 --> sell 1      5 --> buy 1
     # 1 --> sell 2      6 --> buy 2
@@ -31,7 +32,7 @@ def make_target(df: pd.DataFrame, target_path: str):
 
     for i in range(len(df)):
 
-        sl = df.ATR.iloc[i] * stop_loss_to_atr_ratio
+        sl = df.AVERAGE_TRUE_RANGE.iloc[i] * stop_loss_to_atr_ratio
 
         do_nothing_found: int = 0
 
@@ -51,7 +52,7 @@ def make_target(df: pd.DataFrame, target_path: str):
 
         buy = False
         sell = False
-        for w in range(i+1, min(i+289, len(df))):
+        for w in range(i+1, min(i+(window_size+1), len(df))):
 
             if(not buy_sl and df.Low.iloc[w] <= df.Close.iloc[i] - sl):
                 buy_sl = 1
@@ -157,16 +158,47 @@ def make_target(df: pd.DataFrame, target_path: str):
     df["do_nothing"] = do_nothing
     df["windowsizes"] = windowsizes
     df.to_csv(target_path, index=False)
+    return
 
 
-def main():
-    target_paths = data_settings.data_with_targets_parts_paths
-    dfs = [pd.read_csv(path)
-           for path in data_settings.data_without_targets_parts_paths]
+def main(data_name: str):
+
+    window_size = data_settings.sl_window
+    parts = 8
+
+    csv_path = "D:/dev/workspace/vscode/python/bos/data/csv/"
+    cleaed_data_path = csv_path + "with_indicator/" + data_name + ".csv"
+    df = pd.read_csv(cleaed_data_path)
+
+    n = df.shape[0] // parts
+    dfs = [df[i * n:(i+1)*n + (window_size+1)].reset_index(drop=True)
+           for i in range(parts)]
+
+    target_paths = [
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_1.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_2.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_3.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_4.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_5.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_6.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_7.csv",
+        f"D:/dev/workspace/vscode/python/bos/data/csv/with_class/{data_name}_part_8.csv"
+    ]
+
     with ProcessPoolExecutor() as executor:
         executor.map(make_target, dfs, target_paths)
+
+    dfs = [pd.read_csv(target_path) for target_path in target_paths]
+
+    df = pd.concat([part[:-(window_size+1)]
+                   for part in dfs]).reset_index(drop=True)
+
+    with_class_data_path = csv_path + "with_class/" + data_name + ".csv"
+
+    df.to_csv(with_class_data_path, index=False)
 
 
 if __name__ == "__main__":
 
-    main()
+    data_name = data_settings.data_name
+    main(data_name)

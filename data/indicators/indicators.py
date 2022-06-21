@@ -1,10 +1,11 @@
 import ta
 import pandas as pd
+from settings.settings import data_settings
 
 
 def main(data_name: str):
 
-    csv_path = "D:/dev/workspace/vscode/python/bos/data/csv/"
+    csv_path = data_settings.csv_path
     cleaed_data_path = csv_path + "cleaned_mt_data/" + data_name + ".csv"
 
     df = pd.read_csv(cleaed_data_path)
@@ -188,5 +189,5 @@ def main(data_name: str):
 
 if __name__ == "__main__":
 
-    data_name = "SP500m_H1_202009231400_202206172200"
+    data_name = data_settings.data_name
     main(data_name)
