@@ -2,7 +2,7 @@
 settings/*.json
 tmp
 model/models
-
+MyStrategy.html
 data/csv
 data/indicators/images
 

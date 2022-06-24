@@ -53,37 +53,7 @@ def preprocess(data_name: str):
     df["do_nothing"] = do_nothings
     df["DateTime"] = date_time
 
-    # Make relative columns
-    relative_columns = ["BOLLINGER_HBAND",
-                        "BOLLINGER_LBAND",
-                        "BOLLINGER_MAVG",
-                        "DONCHIAN_CHANNEL_HBAND",
-                        "DONCHIAN_CHANNEL_LBAND",
-                        "DONCHIAN_CHANNEL_MBAND",
-                        "EMA_INDICATOR_12",
-                        "EMA_INDICATOR_26",
-                        "EMA_INDICATOR_50",
-                        "EMA_INDICATOR_100",
-                        "EMA_INDICATOR_200",
-                        "SMA_INDICATOR_12",
-                        "SMA_INDICATOR_26",
-                        "SMA_INDICATOR_50",
-                        "SMA_INDICATOR_100",
-                        "SMA_INDICATOR_200",
-                        "Open",
-                        "High",
-                        "Low",
-                        "ICHIMOKU_A",
-                        "ICHIMOKU_B",
-                        "ICHIMOKU_BASE_LINE",
-                        "ICHIMOKU_CONVERSION_LINE",
-                        "KELTNER_CHANNEL_HBAND",
-                        "KELTNER_CHANNEL_LBAND",
-                        "KELTNER_CHANNEL_MBAND",
-                        "NEGATIVE_VOLUME_INDEX",
-                        "VOLUME_WEIGHTED_AVERAGE_PRICE"]
-
-    for column in relative_columns:
+    for column in data_settings.relative_columns:
         df[f"{column}_C"] = (df[column] / df.Close)*100
 
     # ------------------------------------------------------
@@ -96,8 +66,8 @@ def preprocess(data_name: str):
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
     n = df.shape[0]
-    train_df = df[:int((0.95)*n)].reset_index(drop=True)
-    test_df = df[int((0.95)*n):].reset_index(drop=True)
+    train_df = df[:int((0.90)*n)].reset_index(drop=True)
+    test_df = df[int((0.90)*n):].reset_index(drop=True)
 
     train_df.to_csv(path+"/train.csv", index=False)
     test_df.to_csv(path+"/test.csv", index=False)

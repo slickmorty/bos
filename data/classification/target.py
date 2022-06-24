@@ -1,6 +1,7 @@
 from concurrent.futures import ProcessPoolExecutor
 from settings.settings import data_settings
 import pandas as pd
+import pathlib
 
 
 def make_target(df: pd.DataFrame, target_path: str):
@@ -196,6 +197,9 @@ def add_targets(data_name: str):
     with_class_data_path = csv_path + "with_class/" + data_name + ".csv"
 
     df.to_csv(with_class_data_path, index=False)
+
+    for path in target_paths:
+        pathlib.Path(path).unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
