@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from settings.settings import data_settings
 import pathlib
+from datetime import datetime
 
 
 def preprocess(data_name: str):
@@ -65,9 +66,16 @@ def preprocess(data_name: str):
     path = csv_path + "preprocessed/" + data_name
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
-    n = df.shape[0]
-    train_df = df[:int((0.90)*n)].reset_index(drop=True)
-    test_df = df[int((0.90)*n):].reset_index(drop=True)
+    df["DateTime"] = pd.to_datetime(df.pop(df.DateTime.name))
+
+    train_df = df.loc[df.DateTime < datetime(
+        2022, 1, 1)].reset_index(drop=True)
+    test_df = df.loc[df.DateTime >= datetime(
+        2022, 1, 1)].reset_index(drop=True)
+
+    # n = df.shape[0]
+    # train_df = df[:int((0.90)*n)].reset_index(drop=True)
+    # test_df = df[int((0.90)*n):].reset_index(drop=True)
 
     train_df.to_csv(path+"/train.csv", index=False)
     test_df.to_csv(path+"/test.csv", index=False)
