@@ -8,7 +8,7 @@ from datetime import datetime
 def preprocess(data_name: str):
 
     csv_path = data_settings.csv_path
-    data_path = csv_path + "with_class/" + data_name + ".csv"
+    data_path = csv_path + "/with_class/" + data_name + ".csv"
     df = pd.read_csv(data_path)
 
     df = df.dropna().reset_index(drop=True)
@@ -63,7 +63,7 @@ def preprocess(data_name: str):
     # ------------------------------------------------------
     # Saving all file + train and test dataframes
 
-    path = csv_path + "preprocessed/" + data_name
+    path = csv_path + "/preprocessed/" + data_name
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
     df.to_csv(
