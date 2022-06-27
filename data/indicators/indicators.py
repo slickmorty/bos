@@ -120,18 +120,19 @@ def add_indicators(data_name: str):
         "AROON_UP": ta.trend.aroon_up,
     }
     indicators_ma = {
+        "EMA_INDICATOR_8": ta.trend.ema_indicator,
         "EMA_INDICATOR_12": ta.trend.ema_indicator,
-        "EMA_INDICATOR_12": ta.trend.ema_indicator,
-        "EMA_INDICATOR_26": ta.trend.ema_indicator,
-        "EMA_INDICATOR_50": ta.trend.ema_indicator,
-        "EMA_INDICATOR_100": ta.trend.ema_indicator,
-        "EMA_INDICATOR_200": ta.trend.ema_indicator,
+        "EMA_INDICATOR_24": ta.trend.ema_indicator,
+        "EMA_INDICATOR_48": ta.trend.ema_indicator,
+        "EMA_INDICATOR_96": ta.trend.ema_indicator,
+        "EMA_INDICATOR_192": ta.trend.ema_indicator,
 
+        "SMA_INDICATOR_8": ta.trend.sma_indicator,
         "SMA_INDICATOR_12": ta.trend.sma_indicator,
-        "SMA_INDICATOR_26": ta.trend.sma_indicator,
-        "SMA_INDICATOR_50": ta.trend.sma_indicator,
-        "SMA_INDICATOR_100": ta.trend.sma_indicator,
-        "SMA_INDICATOR_200": ta.trend.sma_indicator,
+        "SMA_INDICATOR_24": ta.trend.sma_indicator,
+        "SMA_INDICATOR_48": ta.trend.sma_indicator,
+        "SMA_INDICATOR_96": ta.trend.sma_indicator,
+        "SMA_INDICATOR_192": ta.trend.sma_indicator,
 
     }
 
@@ -172,15 +173,17 @@ def add_indicators(data_name: str):
 
     for name, indicator in indicators_ma.items():
         print(name)
-        if "12" in name:
+        if "8" in name:
             df[name] = indicator(close_r, window=shorts[0])
-        elif "26" in name:
+        elif "12" in name:
             df[name] = indicator(close_r, window=shorts[1])
-        elif "50" in name:
+        elif "24" in name:
+            df[name] = indicator(close_r, window=shorts[2])
+        elif "48" in name:
             df[name] = indicator(close_r, window=longs[0])
-        elif "100" in name:
+        elif "96" in name:
             df[name] = indicator(close_r, window=longs[1])
-        elif "200" in name:
+        elif "192" in name:
             df[name] = indicator(close_r, window=longs[2])
 
     data_indicator_path = csv_path+"with_indicator/" + data_name + ".csv"
