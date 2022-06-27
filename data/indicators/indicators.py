@@ -15,8 +15,8 @@ def add_indicators(data_name: str):
     close_r = df["Close"]
     volume_r = df["TickVol"]
 
-    shorts = (12, 26)
-    longs = (50, 100, 200)
+    shorts = (8, 12, 24)
+    longs = (48, 96, 192)
 
     indicators_c = {
         # close_r
