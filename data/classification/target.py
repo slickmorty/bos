@@ -7,7 +7,7 @@ import pathlib
 def make_target(df: pd.DataFrame, target_path: str):
 
     window_size = data_settings.sl_window
-    stop_loss_to_atr_ratio = 3
+    sl_to_atr = data_settings.sl_to_atr
 
     # 0 --> sell 1      5 --> buy 1
     # 1 --> sell 2      6 --> buy 2
@@ -33,7 +33,7 @@ def make_target(df: pd.DataFrame, target_path: str):
 
     for i in range(len(df)):
 
-        sl = df.AVERAGE_TRUE_RANGE.iloc[i] * stop_loss_to_atr_ratio
+        sl = df.AVERAGE_TRUE_RANGE.iloc[i] * sl_to_atr
 
         do_nothing_found: int = 0
 
