@@ -27,16 +27,18 @@ def preprocess(data_name: str):
     df["Five_Year_sin"] = (np.sin(timestamps * (2 * np.pi / year)))  # /2
     df["Five_Year_cos"] = (np.cos(timestamps * (2 * np.pi / year)))  # /2
 
-    buy = df.buy_2
+    buy = df[f"buy_{data_settings.tp_to_sl}"].copy()
+    df["Buy"] = buy
     df.pop(df.buy_1.name)
-    # df.pop(df.buy_2.name)
+    df.pop(df.buy_2.name)
     df.pop(df.buy_4.name)
     df.pop(df.buy_8.name)
     df.pop(df.buy_16.name)
 
-    sell = df.sell_2
+    sell = df[f"sell_{data_settings.tp_to_sl}"].copy()
+    df["Sell"] = sell
     df.pop(df.sell_1.name)
-    # df.pop(df.sell_2.name)
+    df.pop(df.sell_2.name)
     df.pop(df.sell_4.name)
     df.pop(df.sell_8.name)
     df.pop(df.sell_16.name)
@@ -49,8 +51,9 @@ def preprocess(data_name: str):
             do_nothings.append(1)
         else:
             do_nothings.append(0)
-    df.rename(mapper={buy.name: "Buy", sell.name: "Sell"},
-              axis="columns", inplace=True)
+
+    # df.rename(mapper={buy.name: "Buy", sell.name: "Sell"},
+    #           axis="columns", inplace=True)
     df["do_nothing"] = do_nothings
     df["DateTime"] = date_time
 
@@ -60,25 +63,25 @@ def preprocess(data_name: str):
     # ------------------------------------------------------
     # Saving all file + train and test dataframes
 
-    data_path = csv_path + "preprocessed/" + data_name + ".csv"
-    df.to_csv(data_path, index=False)
-
     path = csv_path + "preprocessed/" + data_name
     pathlib.Path(path).mkdir(parents=True, exist_ok=True)
 
-    df["DateTime"] = pd.to_datetime(df.pop(df.DateTime.name))
+    df.to_csv(
+        path + f"/{data_name}_{data_settings.tp_to_sl:02}.csv", index=False)
 
     train_df = df.loc[df.DateTime < datetime(
-        2022, 1, 1)].reset_index(drop=True)
+        data_settings.split_year, data_settings.split_month, data_settings.split_day)].reset_index(drop=True)
     test_df = df.loc[df.DateTime >= datetime(
-        2022, 1, 1)].reset_index(drop=True)
+        data_settings.split_year, data_settings.split_month, data_settings.split_day)].reset_index(drop=True)
 
     # n = df.shape[0]
-    # train_df = df[:int((0.90)*n)].reset_index(drop=True)
-    # test_df = df[int((0.90)*n):].reset_index(drop=True)
+    # train_df = df[:int((0.85)*n)].reset_index(drop=True)
+    # test_df = df[int((0.85)*n):].reset_index(drop=True)
 
-    train_df.to_csv(path+"/train.csv", index=False)
-    test_df.to_csv(path+"/test.csv", index=False)
+    train_df.to_csv(
+        path + f"/train_{data_settings.tp_to_sl:02}.csv", index=False)
+    test_df.to_csv(
+        path + f"/test_{data_settings.tp_to_sl:02}.csv", index=False)
 
 
 if __name__ == "__main__":
