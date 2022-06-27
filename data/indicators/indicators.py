@@ -173,18 +173,15 @@ def add_indicators(data_name: str):
 
     for name, indicator in indicators_ma.items():
         print(name)
-        if "8" in name:
-            df[name] = indicator(close_r, window=shorts[0])
-        elif "12" in name:
-            df[name] = indicator(close_r, window=shorts[1])
-        elif "24" in name:
-            df[name] = indicator(close_r, window=shorts[2])
-        elif "48" in name:
-            df[name] = indicator(close_r, window=longs[0])
-        elif "96" in name:
-            df[name] = indicator(close_r, window=longs[1])
-        elif "192" in name:
-            df[name] = indicator(close_r, window=longs[2])
+        for _short in shorts:
+            if f"{_short}" in name:
+                df[name] = indicator(close_r, window=_short)
+                break
+
+        for _long in longs:
+            if f"{_long}" in name:
+                df[name] = indicator(close_r, window=_long)
+                break
 
     data_indicator_path = csv_path+"with_indicator/" + data_name + ".csv"
     df.to_csv(data_indicator_path, index=False)
