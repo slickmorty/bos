@@ -6,7 +6,7 @@ from settings.settings import data_settings
 def add_indicators(data_name: str):
 
     csv_path = data_settings.csv_path
-    cleaed_data_path = csv_path + "cleaned_mt_data/" + data_name + ".csv"
+    cleaed_data_path = csv_path + "/cleaned_mt_data/" + data_name + ".csv"
 
     df = pd.read_csv(cleaed_data_path)
 
@@ -183,7 +183,7 @@ def add_indicators(data_name: str):
                 df[name] = indicator(close_r, window=_long)
                 break
 
-    data_indicator_path = csv_path+"with_indicator/" + data_name + ".csv"
+    data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
     df.to_csv(data_indicator_path, index=False)
 
 
