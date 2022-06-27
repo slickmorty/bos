@@ -8,6 +8,9 @@ def clean_data(data_name: str):
     data_path = csv_path + "/mt_data/" + data_name + ".csv"
     cleaed_data_path = csv_path + "/cleaned_mt_data/" + data_name + ".csv"
 
+    with open(cleaed_data_path, "w") as f:
+        f.write("")
+
     with open(data_path, "r") as f:
 
         for _, value in enumerate(f):
