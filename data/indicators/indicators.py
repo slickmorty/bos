@@ -1,6 +1,7 @@
 import ta
 import pandas as pd
 from settings.settings import data_settings
+import numpy as np
 
 
 def add_indicators(data_name: str):
@@ -168,8 +169,28 @@ def add_indicators(data_name: str):
                 df[name] = indicator(close_r, window=window)
                 break
 
+    date_time = pd.to_datetime(
+        df.pop("DateTime"), format=data_settings.date_time_format)
+    timestamps = date_time.map(pd.Timestamp.timestamp)
+
+    day = 24  # hours
+    year = (365.2425)*day
+    df["Day_sin"] = (np.sin(timestamps * (2 * np.pi / day)))  # /2
+    df["Day_cos"] = (np.cos(timestamps * (2 * np.pi / day)))  # /2
+    df["One_Year_sin"] = (np.sin(timestamps * (2 * np.pi / year)))  # /2
+    df["One_Year_cos"] = (np.cos(timestamps * (2 * np.pi / year)))  # /2
+    df["Two_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*2))))  # /2
+    df["Two_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*2))))  # /2
+    df["Three_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*3))))  # /2
+    df["Three_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*3))))  # /2
+    df["Four_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*4))))  # /2
+    df["Four_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*4))))  # /2
+    df["Five_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*5))))  # /2
+    df["Five_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*5))))  # /2
     data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
     df.to_csv(data_indicator_path, index=False)
+
+    df["DateTime"] = date_time
 
 
 if __name__ == "__main__":
