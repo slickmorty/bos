@@ -15,8 +15,7 @@ def add_indicators(data_name: str):
     close_r = df["Close"]
     volume_r = df["TickVol"]
 
-    shorts = (8, 12, 24)
-    longs = (48, 96, 192)
+    windows = tuple(data_settings.moving_average_windows)
 
     indicators_c = {
         # close_r
@@ -30,10 +29,10 @@ def add_indicators(data_name: str):
         "STOCHRSI_K": ta.momentum.stochrsi_k,
         "TSI": ta.momentum.tsi,
         "BOLLINGER_HBAND": ta.volatility.bollinger_hband,
-        "BOLLINGER_HBAND_INDICATOR": ta.volatility.bollinger_hband_indicator,
+        # "BOLLINGER_HBAND_INDICATOR": ta.volatility.bollinger_hband_indicator,
         "BOLLINGER_LBAND": ta.volatility.bollinger_lband,
-        "BOLLINGER_LBAND_INDICATOR": ta.volatility.bollinger_lband_indicator,
-        "BOLLINGER_MAVG": ta.volatility.bollinger_mavg,
+        # "BOLLINGER_LBAND_INDICATOR": ta.volatility.bollinger_lband_indicator,
+        # "BOLLINGER_MAVG": ta.volatility.bollinger_mavg,
         "BOLLINGER_PBAND": ta.volatility.bollinger_pband,
         "BOLLINGER_WBAND": ta.volatility.bollinger_wband,
         "ULCER_INDEX": ta.volatility.ulcer_index,
@@ -47,7 +46,7 @@ def add_indicators(data_name: str):
         "TRIX": ta.trend.trix,
         "CUMULATIVE_RETURN": ta.others.cumulative_return,
         "DAILY_LOG_RETURN": ta.others.daily_log_return,
-        "DAILY_RETURN": ta.others.daily_return,
+        # "DAILY_RETURN": ta.others.daily_return,
     }
     indicators_v = {
         # df["TickVol"]
@@ -61,27 +60,27 @@ def add_indicators(data_name: str):
         "STOCH": ta.momentum.stoch,
         "STOCH_SIGNAL": ta.momentum.stoch_signal,
         "ULTIMATE_OSCILLATOR": ta.momentum.ultimate_oscillator,
-        "WILLIAMS_R": ta.momentum.williams_r,
+        # "WILLIAMS_R": ta.momentum.williams_r,
         "AVERAGE_TRUE_RANGE": ta.volatility.average_true_range,
         "DONCHIAN_CHANNEL_HBAND": ta.volatility.donchian_channel_hband,
         "DONCHIAN_CHANNEL_LBAND": ta.volatility.donchian_channel_lband,
         "DONCHIAN_CHANNEL_MBAND": ta.volatility.donchian_channel_mband,
         "DONCHIAN_CHANNEL_PBAND": ta.volatility.donchian_channel_pband,
         "DONCHIAN_CHANNEL_WBAND": ta.volatility.donchian_channel_wband,
-        "KELTNER_CHANNEL_HBAND": ta.volatility.keltner_channel_hband,
-        "KELTNER_CHANNEL_HBAND_INDICATOR": ta.volatility.keltner_channel_hband_indicator,
-        "KELTNER_CHANNEL_LBAND": ta.volatility.keltner_channel_lband,
-        "KELTNER_CHANNEL_LBAND_INDICATOR": ta.volatility.keltner_channel_lband_indicator,
-        "KELTNER_CHANNEL_MBAND": ta.volatility.keltner_channel_mband,
+        # "KELTNER_CHANNEL_HBAND": ta.volatility.keltner_channel_hband,
+        # "KELTNER_CHANNEL_HBAND_INDICATOR": ta.volatility.keltner_channel_hband_indicator,
+        # "KELTNER_CHANNEL_LBAND": ta.volatility.keltner_channel_lband,
+        # "KELTNER_CHANNEL_LBAND_INDICATOR": ta.volatility.keltner_channel_lband_indicator,
+        # "KELTNER_CHANNEL_MBAND": ta.volatility.keltner_channel_mband,
         "KELTNER_CHANNEL_PBAND": ta.volatility.keltner_channel_pband,
         "KELTNER_CHANNEL_WBAND": ta.volatility.keltner_channel_wband,
         "ADX": ta.trend.adx,
         "ADX_NEG": ta.trend.adx_neg,
         "ADX_POS": ta.trend.adx_pos,
         # "PSAR_DOWN": ta.trend.psar_down,
-        "PSAR_DOWN_INDICATOR": ta.trend.psar_down_indicator,
+        # "PSAR_DOWN_INDICATOR": ta.trend.psar_down_indicator,
         # "PSAR_UP": ta.trend.psar_up,
-        "PSAR_UP_INDICATOR": ta.trend.psar_up_indicator,
+        # "PSAR_UP_INDICATOR": ta.trend.psar_up_indicator,
         "VORTEX_INDICATOR_NEG": ta.trend.vortex_indicator_neg,
         "VORTEX_INDICATOR_POS": ta.trend.vortex_indicator_pos,
     }
@@ -119,21 +118,12 @@ def add_indicators(data_name: str):
         "AROON_INDICATOR": ta.trend.AroonIndicator(close_r).aroon_indicator,
         "AROON_UP": ta.trend.aroon_up,
     }
-    indicators_ma = {
-        "EMA_INDICATOR_8": ta.trend.ema_indicator,
-        "EMA_INDICATOR_12": ta.trend.ema_indicator,
-        "EMA_INDICATOR_24": ta.trend.ema_indicator,
-        "EMA_INDICATOR_48": ta.trend.ema_indicator,
-        "EMA_INDICATOR_96": ta.trend.ema_indicator,
-        "EMA_INDICATOR_192": ta.trend.ema_indicator,
 
-        "SMA_INDICATOR_8": ta.trend.sma_indicator,
-        "SMA_INDICATOR_12": ta.trend.sma_indicator,
-        "SMA_INDICATOR_24": ta.trend.sma_indicator,
-        "SMA_INDICATOR_48": ta.trend.sma_indicator,
-        "SMA_INDICATOR_96": ta.trend.sma_indicator,
-        "SMA_INDICATOR_192": ta.trend.sma_indicator,
-
+    indicators_ema = {
+        f"EMA_INDICATOR_{i:03}": ta.trend.ema_indicator for i in windows
+    }
+    indicators_sma = {
+        f"SMA_INDICATOR_{i:03}": ta.trend.ema_indicator for i in windows
     }
 
     for name, indicator in indicators_c.items():
@@ -171,16 +161,11 @@ def add_indicators(data_name: str):
         else:
             df[name] = indicator(close_r)
 
-    for name, indicator in indicators_ma.items():
+    for name, indicator in indicators_ema.items():
         print(name)
-        for _short in shorts:
-            if f"{_short}" in name:
-                df[name] = indicator(close_r, window=_short)
-                break
-
-        for _long in longs:
-            if f"{_long}" in name:
-                df[name] = indicator(close_r, window=_long)
+        for window in windows:
+            if f"{window:03}" in name:
+                df[name] = indicator(close_r, window=window)
                 break
 
     data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
