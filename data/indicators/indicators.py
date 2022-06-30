@@ -169,7 +169,7 @@ def add_indicators(data_name: str):
                 df[name] = indicator(close_r, window=window)
                 break
 
-    for name, indicator in indicators_ema.items():
+    for name, indicator in indicators_sma.items():
         print(name)
         for window in windows:
             if f"{window:03}" in name:
