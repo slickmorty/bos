@@ -169,6 +169,13 @@ def add_indicators(data_name: str):
                 df[name] = indicator(close_r, window=window)
                 break
 
+    for name, indicator in indicators_ema.items():
+        print(name)
+        for window in windows:
+            if f"{window:03}" in name:
+                df[name] = indicator(close_r, window=window)
+                break
+
     date_time = pd.to_datetime(
         df.pop("DateTime"), format=data_settings.date_time_format)
     timestamps = date_time.map(pd.Timestamp.timestamp)
