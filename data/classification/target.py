@@ -1,160 +1,99 @@
 from concurrent.futures import ProcessPoolExecutor
+
+from sklearn import datasets
 from settings.settings import data_settings
 import pandas as pd
 import pathlib
 
 
 def make_target(df: pd.DataFrame, target_path: str):
-
+    """
+        1- Get list of ratios from data_settings
+        2- Sort them
+        3- A list of buys and sells which contains a list for each ratio
+        4- Start the main loop with i as variable
+        5- Start the loop within the other one for doing the windowing stuff
+        6- It's ez to understand no need to explain nevermind :)
+    """
     window_size = data_settings.sl_window
     sl_to_atr = data_settings.sl_to_atr
+    target_tp_to_sl_s = sorted(data_settings.tp_to_sl_s)
 
-    # 0 --> sell 1      5 --> buy 1
-    # 1 --> sell 2      6 --> buy 2
-    # 2 --> sell 4      7 --> buy 4
-    # 3 --> sell 8      8 --> buy 8
-    # 4 --> sell 16     9 --> buy 16
+    # 0 --> sell 1          6  --> buy 1
+    # 1 --> sell 1.25       7  --> buy 1.25
+    # 2 --> sell 1.5        8  --> buy 1.5
+    # 3 --> sell 1.75       9  --> buy 1.75
+    # 4 --> sell 2          10 --> buy 2
+    # 5 --> sell 4          11 --> buy 4
 
-    buy_1 = []
-    buy_2 = []
-    buy_4 = []
-    buy_8 = []
-    buy_16 = []
-
-    sell_1 = []
-    sell_2 = []
-    sell_4 = []
-    sell_8 = []
-    sell_16 = []
+    buys = [[] for _ in target_tp_to_sl_s]
+    sells = [[] for _ in target_tp_to_sl_s]
 
     do_nothing = []
-
     windowsizes = []
 
     for i in range(len(df)):
 
-        sl = df.AVERAGE_TRUE_RANGE.iloc[i] * sl_to_atr
+        sl = max(df.AVERAGE_TRUE_RANGE.iloc[i],
+                 df.AVERAGE_TRUE_RANGE.mean()) * sl_to_atr
 
         do_nothing_found: int = 0
 
-        buy_sl: int = 0
-        buy_1_found: int = 0
-        buy_2_found: int = 0
-        buy_4_found: int = 0
-        buy_8_found: int = 0
-        buy_16_found: int = 0
+        buys_found = [0 for _ in target_tp_to_sl_s]
+        buy_sl_hit: int = 0
 
-        sell_sl: int = 0
-        sell_1_found: int = 0
-        sell_2_found: int = 0
-        sell_4_found: int = 0
-        sell_8_found: int = 0
-        sell_16_found: int = 0
+        sells_found = [0 for _ in target_tp_to_sl_s]
+        sell_sl_hit: int = 0
 
-        buy = False
-        sell = False
+        bought = False
+        sold = False
+        n = len(target_tp_to_sl_s)
         for w in range(i+1, min(i+(window_size+1), len(df))):
 
-            if(not buy_sl and df.Low.iloc[w] <= df.Close.iloc[i] - sl):
-                buy_sl = 1
+            if(not buy_sl_hit and df.Low.iloc[w] <= df.Close.iloc[i] - sl):
+                buy_sl_hit = 1
 
-            elif(not buy_16_found and not sell and df.High.iloc[w] >= df.Close.iloc[i] + 16*sl):
-                buy_16_found = 1
-                buy_8_found = 1
-                buy_4_found = 1
-                buy_2_found = 1
-                buy_1_found = 1
-                buy = True
+            else:
+                for index, ratio in enumerate(target_tp_to_sl_s[::-1]):
+                    if(not buys_found[-(index+1)] and not sold and df.High.iloc[w] >= df.Close.iloc[i] + ratio * sl):
+                        buys_found[:(
+                            n-index)] = [1 for _ in range(len(buys_found[:(n-index)]))]
+                        bought = True
+                        break
 
-            elif(not buy_8_found and not sell and df.High.iloc[w] >= df.Close.iloc[i] + 8*sl):
-                buy_8_found = 1
-                buy_4_found = 1
-                buy_2_found = 1
-                buy_1_found = 1
-                buy = True
+            if(not sell_sl_hit and df.High.iloc[w] >= df.Close.iloc[i] + sl):
+                sell_sl_hit = 1
 
-            elif(not buy_4_found and not sell and df.High.iloc[w] >= df.Close.iloc[i] + 4*sl):
-                buy_4_found = 1
-                buy_2_found = 1
-                buy_1_found = 1
-                buy = True
+            else:
+                for index, ratio in enumerate(target_tp_to_sl_s[::-1]):
+                    if(not sells_found[-(index+1)] and not bought and df.Low.iloc[w] <= df.Close.iloc[i] - ratio * sl):
+                        sells_found[:(
+                            n-index)] = [1 for _ in range(len(sells_found[:(n-index)]))]
+                        bought = True
+                        break
 
-            elif(not buy_2_found and not sell and df.High.iloc[w] >= df.Close.iloc[i] + 2*sl):
-                buy_2_found = 1
-                buy_1_found = 1
-                buy = True
-
-            elif(not buy_1_found and not sell and df.High.iloc[w] >= df.Close.iloc[i] + 1*sl):
-                buy_1_found = 1
-                buy = True
-
-            if(not sell_sl and df.High.iloc[w] >= df.Close.iloc[i] + sl):
-                sell_sl = 1
-
-            elif(not sell_16_found and not buy and df.Low.iloc[w] <= df.Close.iloc[i] - 16*sl):
-                sell_16_found = 1
-                sell_8_found = 1
-                sell_4_found = 1
-                sell_2_found = 1
-                sell_1_found = 1
-                sell = True
-
-            elif(not sell_8_found and not buy and df.Low.iloc[w] <= df.Close.iloc[i] - 8*sl):
-                sell_8_found = 1
-                sell_4_found = 1
-                sell_2_found = 1
-                sell_1_found = 1
-                sell = True
-
-            elif(not sell_4_found and not buy and df.Low.iloc[w] <= df.Close.iloc[i] - 4*sl):
-                sell_4_found = 1
-                sell_2_found = 1
-                sell_1_found = 1
-                sell = True
-
-            elif(not sell_2_found and not buy and df.Low.iloc[w] <= df.Close.iloc[i] - 2*sl):
-                sell_2_found = 1
-                sell_1_found = 1
-                sell = True
-
-            elif(not sell_1_found and not buy and df.Low.iloc[w] <= df.Close.iloc[i] - 1*sl):
-                sell_1_found = 1
-                sell = True
-
-            if((buy_sl and buy) or (sell_sl and sell) or (buy_16_found or sell_16_found)):
+            if((buy_sl_hit and bought) or (sell_sl_hit and sold) or (buys_found[-1] or buys_found[-1])):
                 break
 
-        if(not buy and not sell):
+        if(not bought and not sold):
             do_nothing_found = 1
 
-        buy_1.append(buy_1_found)
-        buy_2.append(buy_2_found)
-        buy_4.append(buy_4_found)
-        buy_8.append(buy_8_found)
-        buy_16.append(buy_16_found)
+        for _, values in enumerate(zip(buys, buys_found)):
+            values[0].append(values[1])
 
-        sell_1.append(sell_1_found)
-        sell_2.append(sell_2_found)
-        sell_4.append(sell_4_found)
-        sell_8.append(sell_8_found)
-        sell_16.append(sell_16_found)
+        for _, values in enumerate(zip(sells, sells_found)):
+            values[0].append(values[1])
 
         do_nothing.append(do_nothing_found)
         windowsizes.append(w-i)
 
         print(f"{i=}", "window size:", w-i)
 
-    df["buy_1"] = buy_1
-    df["buy_2"] = buy_2
-    df["buy_4"] = buy_4
-    df["buy_8"] = buy_8
-    df["buy_16"] = buy_16
+    for _, values in enumerate(zip(buys, target_tp_to_sl_s)):
+        df[f"buy_{values[1]}"] = values[0]
 
-    df["sell_1"] = sell_1
-    df["sell_2"] = sell_2
-    df["sell_4"] = sell_4
-    df["sell_8"] = sell_8
-    df["sell_16"] = buy_16
+    for _, values in enumerate(zip(sells, target_tp_to_sl_s)):
+        df[f"sell_{values[1]}"] = values[0]
 
     df["do_nothing"] = do_nothing
     df["windowsizes"] = windowsizes
@@ -167,8 +106,8 @@ def add_targets(data_name: str):
     window_size = data_settings.sl_window
     parts = 8
 
-    csv_path = "D:/dev/workspace/vscode/python/bos/data/csv/"
-    cleaed_data_path = csv_path + "with_indicator/" + data_name + ".csv"
+    csv_path = data_settings.csv_path
+    cleaed_data_path = csv_path + "/with_indicator/" + data_name + ".csv"
     df = pd.read_csv(cleaed_data_path)
 
     n = df.shape[0] // parts
@@ -194,7 +133,8 @@ def add_targets(data_name: str):
     df = pd.concat([part[:-(window_size+1)]
                    for part in dfs]).reset_index(drop=True)
 
-    with_class_data_path = csv_path + "with_class/" + data_name + ".csv"
+    with_class_data_path = csv_path + "/with_class/" + \
+        f"{data_name}_slatr_{data_settings.sl_to_atr:02}" + ".csv"
 
     df.to_csv(with_class_data_path, index=False)
 
