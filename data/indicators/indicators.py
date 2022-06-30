@@ -187,10 +187,11 @@ def add_indicators(data_name: str):
     df["Four_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*4))))  # /2
     df["Five_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*5))))  # /2
     df["Five_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*5))))  # /2
-    data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
-    df.to_csv(data_indicator_path, index=False)
 
     df["DateTime"] = date_time
+
+    data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
+    df.to_csv(data_indicator_path, index=False)
 
 
 if __name__ == "__main__":
