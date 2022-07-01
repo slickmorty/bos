@@ -30,10 +30,10 @@ def add_indicators(data_name: str):
         "STOCHRSI_K": ta.momentum.stochrsi_k,
         "TSI": ta.momentum.tsi,
         "BOLLINGER_HBAND": ta.volatility.bollinger_hband,
-        # "BOLLINGER_HBAND_INDICATOR": ta.volatility.bollinger_hband_indicator,
+        "BOLLINGER_HBAND_INDICATOR": ta.volatility.bollinger_hband_indicator,
         "BOLLINGER_LBAND": ta.volatility.bollinger_lband,
-        # "BOLLINGER_LBAND_INDICATOR": ta.volatility.bollinger_lband_indicator,
-        # "BOLLINGER_MAVG": ta.volatility.bollinger_mavg,
+        "BOLLINGER_LBAND_INDICATOR": ta.volatility.bollinger_lband_indicator,
+        "BOLLINGER_MAVG": ta.volatility.bollinger_mavg,
         "BOLLINGER_PBAND": ta.volatility.bollinger_pband,
         "BOLLINGER_WBAND": ta.volatility.bollinger_wband,
         "ULCER_INDEX": ta.volatility.ulcer_index,
@@ -47,7 +47,7 @@ def add_indicators(data_name: str):
         "TRIX": ta.trend.trix,
         "CUMULATIVE_RETURN": ta.others.cumulative_return,
         "DAILY_LOG_RETURN": ta.others.daily_log_return,
-        # "DAILY_RETURN": ta.others.daily_return,
+        "DAILY_RETURN": ta.others.daily_return,
     }
     indicators_v = {
         # df["TickVol"]
@@ -61,18 +61,18 @@ def add_indicators(data_name: str):
         "STOCH": ta.momentum.stoch,
         "STOCH_SIGNAL": ta.momentum.stoch_signal,
         "ULTIMATE_OSCILLATOR": ta.momentum.ultimate_oscillator,
-        # "WILLIAMS_R": ta.momentum.williams_r,
+        "WILLIAMS_R": ta.momentum.williams_r,
         "AVERAGE_TRUE_RANGE": ta.volatility.average_true_range,
         "DONCHIAN_CHANNEL_HBAND": ta.volatility.donchian_channel_hband,
         "DONCHIAN_CHANNEL_LBAND": ta.volatility.donchian_channel_lband,
         "DONCHIAN_CHANNEL_MBAND": ta.volatility.donchian_channel_mband,
         "DONCHIAN_CHANNEL_PBAND": ta.volatility.donchian_channel_pband,
         "DONCHIAN_CHANNEL_WBAND": ta.volatility.donchian_channel_wband,
-        # "KELTNER_CHANNEL_HBAND": ta.volatility.keltner_channel_hband,
-        # "KELTNER_CHANNEL_HBAND_INDICATOR": ta.volatility.keltner_channel_hband_indicator,
-        # "KELTNER_CHANNEL_LBAND": ta.volatility.keltner_channel_lband,
-        # "KELTNER_CHANNEL_LBAND_INDICATOR": ta.volatility.keltner_channel_lband_indicator,
-        # "KELTNER_CHANNEL_MBAND": ta.volatility.keltner_channel_mband,
+        "KELTNER_CHANNEL_HBAND": ta.volatility.keltner_channel_hband,
+        "KELTNER_CHANNEL_HBAND_INDICATOR": ta.volatility.keltner_channel_hband_indicator,
+        "KELTNER_CHANNEL_LBAND": ta.volatility.keltner_channel_lband,
+        "KELTNER_CHANNEL_LBAND_INDICATOR": ta.volatility.keltner_channel_lband_indicator,
+        "KELTNER_CHANNEL_MBAND": ta.volatility.keltner_channel_mband,
         "KELTNER_CHANNEL_PBAND": ta.volatility.keltner_channel_pband,
         "KELTNER_CHANNEL_WBAND": ta.volatility.keltner_channel_wband,
         "ADX": ta.trend.adx,
@@ -92,16 +92,16 @@ def add_indicators(data_name: str):
     }
     indicators_hlcv = {
         # high_r,low_r,close_r,df["TickVol"]
-        # "ACC_DIST_INDEX": ta.volume.acc_dist_index,
+        "ACC_DIST_INDEX": ta.volume.acc_dist_index,
         "CHAIKIN_MONEY_FLOW": ta.volume.chaikin_money_flow,
         "MONEY_FLOW_INDEX": ta.volume.money_flow_index,
         "VOLUME_WEIGHTED_AVERAGE_PRICE": ta.volume.volume_weighted_average_price,
     }
     indicators_cv = {
         # close_r,df["TickVol"]
-        # "FORCE_INDEX": ta.volume.force_index,
+        "FORCE_INDEX": ta.volume.force_index,
         "NEGATIVE_VOLUME_INDEX": ta.volume.negative_volume_index,
-        # "ON_BALANCE_VOLUME": ta.volume.on_balance_volume,
+        "ON_BALANCE_VOLUME": ta.volume.on_balance_volume,
         "VOLUME_PRICE_TREND": ta.volume.volume_price_trend,
     }
     indicators_hl = {
