@@ -78,10 +78,10 @@ def add_indicators(data_name: str):
         "ADX": ta.trend.adx,
         "ADX_NEG": ta.trend.adx_neg,
         "ADX_POS": ta.trend.adx_pos,
-        # "PSAR_DOWN": ta.trend.psar_down,
-        # "PSAR_DOWN_INDICATOR": ta.trend.psar_down_indicator,
-        # "PSAR_UP": ta.trend.psar_up,
-        # "PSAR_UP_INDICATOR": ta.trend.psar_up_indicator,
+        "PSAR_DOWN": ta.trend.psar_down,
+        "PSAR_DOWN_INDICATOR": ta.trend.psar_down_indicator,
+        "PSAR_UP": ta.trend.psar_up,
+        "PSAR_UP_INDICATOR": ta.trend.psar_up_indicator,
         "VORTEX_INDICATOR_NEG": ta.trend.vortex_indicator_neg,
         "VORTEX_INDICATOR_POS": ta.trend.vortex_indicator_pos,
     }
@@ -137,7 +137,7 @@ def add_indicators(data_name: str):
 
     for name, indicator in indicators_hlc.items():
         print(name)
-        df[name] = indicator(high_r, low_r, close_r)
+        df[name] = indicator(high_r, low_r, close_r, fillna=True)
 
     for name, indicator in indicators_hlv.items():
         print(name)
@@ -180,6 +180,7 @@ def add_indicators(data_name: str):
         df.pop("DateTime"), format=data_settings.date_time_format)
     timestamps = date_time.map(pd.Timestamp.timestamp)
 
+    # TODO, it is slow use concat or some other shit
     day = 24  # hours
     year = (365.2425)*day
     df["Day_sin"] = (np.sin(timestamps * (2 * np.pi / day)))  # /2
