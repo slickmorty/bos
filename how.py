@@ -18,3 +18,9 @@ steps: dict = {
         ],
     },
 }
+
+# TODO: make new data with sl_to_tp=6 #TODO fuck off i did it with 5
+# TODO: Change tp to sl to 1, 1.25, 1.5, 1.75 , 2 , 4 if things didn't work
+# TODO: make df columns relate to each other #TODO nvm its to fucking expensive
+# TODO: make important columns relative to each other
+# TODO:
