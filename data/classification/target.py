@@ -55,7 +55,8 @@ def make_target(df: pd.DataFrame, target_path: str):
 
             else:
                 for index, ratio in enumerate(target_tp_to_sl_s[::-1]):
-                    if(not buys_found[-(index+1)] and not sold and df.High.iloc[w] >= df.Close.iloc[i] + ratio * sl):
+                    tp = ratio * sl
+                    if(not buys_found[-(index+1)] and not sold and df.High.iloc[w] >= df.Close.iloc[i] + tp):
                         buys_found[:(
                             n-index)] = [1 for _ in range(len(buys_found[:(n-index)]))]
                         bought = True
@@ -66,13 +67,14 @@ def make_target(df: pd.DataFrame, target_path: str):
 
             else:
                 for index, ratio in enumerate(target_tp_to_sl_s[::-1]):
-                    if(not sells_found[-(index+1)] and not bought and df.Low.iloc[w] <= df.Close.iloc[i] - ratio * sl):
+                    tp = ratio * sl
+                    if(not sells_found[-(index+1)] and not bought and df.Low.iloc[w] <= df.Close.iloc[i] - tp):
                         sells_found[:(
                             n-index)] = [1 for _ in range(len(sells_found[:(n-index)]))]
-                        bought = True
+                        sold = True
                         break
 
-            if((buy_sl_hit and bought) or (sell_sl_hit and sold) or (buys_found[-1] or buys_found[-1])):
+            if((buy_sl_hit and bought) or (sell_sl_hit and sold) or (buys_found[-1] or sells_found[-1])):
                 break
 
         if(not bought and not sold):
