@@ -74,7 +74,7 @@ def preprocess(data_name: str):
     # Loading data and making it ready
 
     df = pd.read_csv(
-        f"{data_settings.csv_path}/with_class/{data_name}.csv")
+        f"{data_settings.csv_path}/with_class/{data_name}_slatr_{data_settings.sl_to_atr:02}.csv")
 
     train_starting_date = datetime(data_settings.train_split_year,
                                    data_settings.train_split_month,
@@ -82,6 +82,7 @@ def preprocess(data_name: str):
 
     df["DateTime"] = pd.to_datetime(
         df.pop("DateTime"), format=data_settings.date_time_format)
+
     df = df.loc[df.DateTime > train_starting_date].reset_index(drop=True)
 
     print("Number of rows with na values:", df.shape[0] - df.dropna().shape[0])
@@ -114,7 +115,8 @@ def preprocess(data_name: str):
     df["DateTime"] = pd.to_datetime(
         date_time, format=data_settings.date_time_format)
 
-    df.to_csv(data_settings.csv_path + f"/{data_name}.csv", index=False)
+    df.to_csv(data_settings.csv_path + "/preprocessed" +
+              f"/{data_name}.csv", index=False)
 
 
 if __name__ == "__main__":
