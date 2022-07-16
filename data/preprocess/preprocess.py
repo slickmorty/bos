@@ -69,12 +69,12 @@ def preprocess(data_name: str):
 """
 
 
-def preprocess():
+def preprocess(data_name: str):
 
     # Loading data and making it ready
 
     df = pd.read_csv(
-        f"{data_settings.csv_path}/with_class/{data_settings.data_name}.csv")
+        f"{data_settings.csv_path}/with_class/{data_name}.csv")
 
     train_starting_date = datetime(data_settings.train_split_year,
                                    data_settings.train_split_month,
@@ -107,7 +107,6 @@ def preprocess():
             new_column.name = f"{column}/{i}"
             df = pd.concat([df, new_column], axis=1)
 
-    #TODO: Check
     print("Number of rows with na values:", df.shape[0] - df.dropna().shape[0])
     df.fillna(0, inplace=True)
     df.replace(np.inf, 1e15, inplace=True)
