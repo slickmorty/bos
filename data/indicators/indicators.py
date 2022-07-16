@@ -179,23 +179,49 @@ def add_indicators(data_name: str):
     date_time = pd.to_datetime(
         df.pop("DateTime"), format=data_settings.date_time_format)
     timestamps = date_time.map(pd.Timestamp.timestamp)
-
     # TODO, it is slow use concat or some other shit
     day = 24  # hours
     year = (365.2425)*day
-    df["Day_sin"] = (np.sin(timestamps * (2 * np.pi / day)))  # /2
-    df["Day_cos"] = (np.cos(timestamps * (2 * np.pi / day)))  # /2
-    df["One_Year_sin"] = (np.sin(timestamps * (2 * np.pi / year)))  # /2
-    df["One_Year_cos"] = (np.cos(timestamps * (2 * np.pi / year)))  # /2
-    df["Two_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*2))))  # /2
-    df["Two_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*2))))  # /2
-    df["Three_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*3))))  # /2
-    df["Three_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*3))))  # /2
-    df["Four_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*4))))  # /2
-    df["Four_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*4))))  # /2
-    df["Five_Year_sin"] = (np.sin(timestamps * (2 * np.pi / (year*5))))  # /2
-    df["Five_Year_cos"] = (np.cos(timestamps * (2 * np.pi / (year*5))))  # /2
 
+    day_sin = pd.Series(np.sin(timestamps * (2 * np.pi / day)))
+    day_sin.name = "Day_sin"
+    day_cos = pd.Series(np.cos(timestamps * (2 * np.pi / day)))
+    day_cos.name = "Day_cos"
+    one_year_sin = pd.Series(np.sin(timestamps * (2 * np.pi / year)))
+    one_year_sin.name = "One_Year_sin"
+    one_year_cos = pd.Series(np.cos(timestamps * (2 * np.pi / year)))
+    one_year_cos.name = "One_Year_cos"
+    two_year_sin = pd.Series(np.sin(timestamps * (2 * np.pi / (year*2))))
+    two_year_sin.name = "Two_Year_sin"
+    two_year_cos = pd.Series(np.cos(timestamps * (2 * np.pi / (year*2))))
+    two_year_cos.name = "Two_Year_cos"
+    three_year_sin = pd.Series(np.sin(timestamps * (2 * np.pi / (year*3))))
+    three_year_sin.name = "Three_Year_sin"
+    three_year_cos = pd.Series(np.cos(timestamps * (2 * np.pi / (year*3))))
+    three_year_cos.name = "Three_Year_cos"
+    four_year_sin = pd.Series(np.sin(timestamps * (2 * np.pi / (year*4))))
+    four_year_sin.name = "Four_Year_sin"
+    four_year_cos = pd.Series(np.cos(timestamps * (2 * np.pi / (year*4))))
+    four_year_cos.name = "Four_Year_cos"
+    five_year_sin = pd.Series(np.sin(timestamps * (2 * np.pi / (year*5))))
+    five_year_sin.name = "Five_Year_sin"
+    five_year_cos = pd.Series(np.cos(timestamps * (2 * np.pi / (year*5))))
+    five_year_cos.name = "Five_Year_cos"
+
+    df = pd.concat([df,
+                    day_sin,
+                    day_cos,
+                    one_year_sin,
+                    one_year_cos,
+                    two_year_sin,
+                    two_year_cos,
+                    three_year_sin,
+                    three_year_cos,
+                    four_year_sin,
+                    four_year_cos,
+                    five_year_sin,
+                    five_year_cos,
+                    ], axis=1)
     df["DateTime"] = date_time
 
     data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
