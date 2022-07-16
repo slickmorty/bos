@@ -5,6 +5,8 @@ model/models
 MyStrategy.html
 data/csv
 data/indicators/images
+data_process.py
+todo.md
 
 #notebooks
 idea.ipynb
