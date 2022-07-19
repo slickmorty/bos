@@ -105,7 +105,7 @@ def preprocess(data_name: str):
         moving_averages.remove(column)
         for i in moving_averages[:]:
             new_column = df[f"{column}"].div(df[f"{i}"])
-            new_column.name = f"{column}/{i}"
+            new_column.name = f"{column}_TO_{i}"
             df = pd.concat([df, new_column], axis=1)
 
     print("Number of rows with na values:", df.shape[0] - df.dropna().shape[0])

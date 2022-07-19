@@ -10,6 +10,11 @@ todo.md
 
 #notebooks
 idea.ipynb
+model.ipynb
+indicators.ipynb
+preprocess.ipynb
+target.ipynb
+backtesting.ipynb
 
 
 # Byte-compiled / optimized / DLL files
