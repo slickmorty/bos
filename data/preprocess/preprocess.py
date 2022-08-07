@@ -96,7 +96,7 @@ def preprocess(data_name: str):
         if column in df.columns:
             new_column = df[column].div(df.Close).mul(100)
             new_column.name = f"{column}_C"
-            df = pd.concat([df, new_column], axis=1)
+            df = pd.concat([df, new_column], axis="columns")
 
     moving_averages = [column for column in data_settings.relative_columns if (
         "SMA" in column) or ("EMA" in column)]
@@ -106,7 +106,7 @@ def preprocess(data_name: str):
         for i in moving_averages[:]:
             new_column = df[f"{column}"].div(df[f"{i}"])
             new_column.name = f"{column}_TO_{i}"
-            df = pd.concat([df, new_column], axis=1)
+            df = pd.concat([df, new_column], axis="columns")
 
     print("Number of rows with na values:", df.shape[0] - df.dropna().shape[0])
     df.fillna(0, inplace=True)

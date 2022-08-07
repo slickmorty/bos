@@ -221,7 +221,7 @@ def add_indicators(data_name: str):
                     four_year_cos,
                     five_year_sin,
                     five_year_cos,
-                    ], axis=1)
+                    ], axis="columns")
     df["DateTime"] = date_time
 
     data_indicator_path = csv_path+"/with_indicator/" + data_name + ".csv"
